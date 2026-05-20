@@ -1,0 +1,179 @@
+# ============================================================
+# sample-workload.yaml
+# Hybrid PSO-ACO Kubernetes Workloads
+# Modified for Runtime Monitoring and Metrics Collection
+# ============================================================
+
+# ------------------------------------------------------------
+# Small GoCJ-Inspired Task
+# 1 CPU Core, 2GB Memory
+# ------------------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gocj-task-small
+  labels:
+    app: gocj-workload
+    dataset: gocj
+    workload: small
+spec:
+  schedulerName: green-scheduler
+  restartPolicy: Never
+
+  containers:
+    - name: task
+      image: python:3.11-slim
+
+      command:
+        - python
+        - -c
+        - |
+          import time
+          print("Starting small workload...")
+          time.sleep(600)
+          print("Small workload completed.")
+
+      resources:
+        requests:
+          cpu: "1000m"
+          memory: "2Gi"
+
+        limits:
+          cpu: "1000m"
+          memory: "2Gi"
+
+---
+# ------------------------------------------------------------
+# Medium GoCJ-Inspired Task
+# 2 CPU Cores, 3GB Memory
+# ------------------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gocj-task-medium
+  labels:
+    app: gocj-workload
+    dataset: gocj
+    workload: medium
+spec:
+  schedulerName: green-scheduler
+  restartPolicy: Never
+
+  containers:
+    - name: task
+      image: python:3.11-slim
+
+      command:
+        - python
+        - -c
+        - |
+          import time
+          print("Starting medium workload...")
+          time.sleep(600)
+          print("Medium workload completed.")
+
+      resources:
+        requests:
+          cpu: "2000m"
+          memory: "3Gi"
+
+        limits:
+          cpu: "2000m"
+          memory: "3Gi"
+
+---
+# ------------------------------------------------------------
+# Large GoCJ-Inspired Task
+# 3 CPU Cores, 4GB Memory
+# ------------------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gocj-task-large
+  labels:
+    app: gocj-workload
+    dataset: gocj
+    workload: large
+spec:
+  schedulerName: green-scheduler
+  restartPolicy: Never
+
+  containers:
+    - name: task
+      image: python:3.11-slim
+
+      command:
+        - python
+        - -c
+        - |
+          import time
+          print("Starting large workload...")
+          time.sleep(600)
+          print("Large workload completed.")
+
+      resources:
+        requests:
+          cpu: "3000m"
+          memory: "4Gi"
+
+        limits:
+          cpu: "3000m"
+          memory: "4Gi"
+
+---
+# ============================================================
+# Batch-Oriented Kubernetes Job
+# Simulates Large-Scale Cloud Workloads
+# ============================================================
+
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: gocj-batch-job
+
+spec:
+
+  parallelism: 5
+  completions: 20
+
+  template:
+
+    metadata:
+      labels:
+        app: gocj-batch
+
+    spec:
+
+      schedulerName: green-scheduler
+      restartPolicy: Never
+
+      containers:
+        - name: batch-task
+
+          image: python:3.11-slim
+
+          command:
+            - python
+            - -c
+            - |
+                import time
+                import random
+
+                duration = random.uniform(300, 600)
+
+                print(f"Running batch workload for {duration:.1f} seconds")
+
+                time.sleep(duration)
+
+                print("Batch workload completed")
+
+          resources:
+
+            requests:
+              cpu: "1000m"
+              memory: "2Gi"
+
+            limits:
+              cpu: "2000m"
+              memory: "4Gi"

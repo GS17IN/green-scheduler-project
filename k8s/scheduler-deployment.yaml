@@ -1,0 +1,80 @@
+# ============================================================
+# scheduler-deployment.yaml
+# Deploys the Green Scheduler into kube-system
+# ============================================================
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: green-scheduler
+  namespace: kube-system
+
+  labels:
+    app: green-scheduler
+    component: scheduler
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: green-scheduler
+
+  template:
+
+    metadata:
+      labels:
+        app: green-scheduler
+        component: scheduler
+
+    spec:
+
+      serviceAccountName: green-scheduler
+
+      tolerations:
+
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
+
+      containers:
+
+        - name: green-scheduler
+
+          image: green-scheduler:latest
+          imagePullPolicy: IfNotPresent
+
+          command:
+            - python
+            - green_scheduler.py
+            - --in-cluster
+
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+
+          resources:
+
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+          livenessProbe:
+
+            exec:
+              command:
+                - python
+                - -c
+                - "import sys; sys.exit(0)"
+
+            initialDelaySeconds: 10
+            periodSeconds: 30

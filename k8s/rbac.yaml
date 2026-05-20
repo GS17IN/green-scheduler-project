@@ -1,0 +1,93 @@
+# ============================================================
+# rbac.yaml
+# RBAC permissions for the Green Scheduler
+# The scheduler needs: list/watch pods, list/watch nodes,
+# create pod bindings, create events
+# ============================================================
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: green-scheduler
+  namespace: kube-system
+  labels:
+    app: green-scheduler
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: green-scheduler
+  labels:
+    app: green-scheduler
+rules:
+  # Watch and list pods across all namespaces
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+
+  # Create pod/binding (the actual scheduling action)
+  - apiGroups: [""]
+    resources: ["pods/binding", "bindings"]
+    verbs: ["create"]
+
+  # Update pod status
+  - apiGroups: [""]
+    resources: ["pods/status"]
+    verbs: ["update", "patch"]
+
+  # List and watch nodes (for resource collection)
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+
+  # Create events (for observability)
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch", "update"]
+
+  # Read replicationcontrollers (needed by scheduler)
+  - apiGroups: [""]
+    resources: ["replicationcontrollers"]
+    verbs: ["get", "list", "watch"]
+
+  # Read services
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch"]
+
+  # Read persistent volumes and claims
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims", "persistentvolumes"]
+    verbs: ["get", "list", "watch"]
+
+  # Read storage classes
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses", "csinodes", "csidrivers", "csistoragecapacities"]
+    verbs: ["get", "list", "watch"]
+
+  # Read policy (pod disruption budgets)
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["get", "list", "watch"]
+
+  # Read apps (deployments, replicasets, statefulsets)
+  - apiGroups: ["apps"]
+    resources: ["statefulsets", "replicasets"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: green-scheduler
+  labels:
+    app: green-scheduler
+subjects:
+  - kind: ServiceAccount
+    name: green-scheduler
+    namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: green-scheduler
+  apiGroup: rbac.authorization.k8s.io
