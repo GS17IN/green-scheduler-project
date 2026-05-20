@@ -1,0 +1,1 @@
+An energy-efficient Kubernetes scheduler using Hybrid Swarm Intelligence techniques combining Particle Swarm Optimization (PSO) and Ant Colony Optimization (ACO). The scheduler dynamically allocates workloads based on node conditions and workload requirements to improve resource utilization, reduce energy consumption, and balance workloads across multi-cloud environments.
