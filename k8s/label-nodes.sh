@@ -2,7 +2,7 @@
 # label-nodes.sh
 # ============================================================
 # Labels your Kubernetes nodes to simulate multi-cloud providers.
-# Run this ONCE after cluster setup to set up cloud-provider labels.
+# Run this once after cluster setup to set up cloud-provider labels.
 #
 # Usage: bash label-nodes.sh
 # ============================================================

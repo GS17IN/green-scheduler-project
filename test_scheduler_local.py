@@ -7,7 +7,6 @@ Uses mock nodes and pods to verify the scheduling decisions.
 Run:
     python test_scheduler_local.py
 
-This lets you validate the algorithm before deploying to minikube.
 """
 
 import sys, os

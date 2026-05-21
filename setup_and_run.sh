@@ -5,9 +5,7 @@
 # Run this on your machine that has kubectl + Docker installed
 # ============================================================
 
-# ── OPTION A: minikube (easiest, runs fully on your laptop) ──
 # Install minikube: https://minikube.sigs.k8s.io/docs/start/
-# Recommended for MTech demo and testing
 
 echo "======================================================"
 echo " STEP 1: Start minikube with multiple nodes"
@@ -41,7 +39,7 @@ docker build \
   -t green-scheduler:latest \
   .
 
-echo "✅ Image built: green-scheduler:latest"
+echo "Image built: green-scheduler:latest"
 
 echo ""
 echo "======================================================"
@@ -50,7 +48,6 @@ echo "======================================================"
 kubectl apply -f k8s/rbac.yaml
 kubectl apply -f k8s/scheduler-deployment.yaml
 
-# Wait for scheduler to be ready
 echo "Waiting for green-scheduler pod to be ready..."
 kubectl -n kube-system wait \
   --for=condition=ready pod \
@@ -70,7 +67,6 @@ echo " STEP 6: Submit workloads"
 echo "======================================================"
 kubectl apply -f k8s/sample-workload.yaml
 
-# Watch pods being scheduled by our scheduler
 kubectl get pods -w &
 WATCH_PID=$!
 

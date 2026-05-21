@@ -24,9 +24,7 @@ from enum import Enum
 from kubernetes import client, config, watch
 
 
-# ============================================================
 # LOGGING
-# ============================================================
 
 logging.basicConfig(
     level=logging.INFO,
@@ -38,9 +36,7 @@ log = logging.getLogger("green-scheduler")
 SCHEDULER_NAME = "green-scheduler"
 
 
-# ============================================================
 # CLOUD PROFILES
-# ============================================================
 
 class CloudProvider(Enum):
     AWS = "AWS"
@@ -66,9 +62,7 @@ CLOUD_PROFILES = {
 }
 
 
-# ============================================================
 # DATA CLASSES
-# ============================================================
 
 @dataclass
 class NodeInfo:
@@ -123,10 +117,7 @@ class PodRequest:
 
     uid: str
 
-
-# ============================================================
 # RESOURCE PARSERS
-# ============================================================
 
 def _parse_cpu(cpu_str: str) -> float:
     cpu_str = str(cpu_str).strip()
@@ -154,9 +145,7 @@ def _parse_mem(mem_str: str) -> float:
     return float(mem_str) / (1024 ** 3)
 
 
-# ============================================================
 # NODE DISCOVERY
-# ============================================================
 
 def get_node_provider(node):
 
@@ -280,10 +269,7 @@ def collect_node_info(v1: client.CoreV1Api):
 
     return nodes
 
-
-# ============================================================
 # FITNESS
-# ============================================================
 
 def multi_obj_fitness(
     assignment,
@@ -363,10 +349,7 @@ def multi_obj_fitness(
         + 0.25 * imbalance
     )
 
-
-# ============================================================
 # REPAIR
-# ============================================================
 
 def repair(assignment, pods, nodes):
 
@@ -426,9 +409,8 @@ def repair(assignment, pods, nodes):
     return fixed
 
 
-# ============================================================
 # HYBRID PSO-ACO
-# ============================================================
+
 
 class HybridPSOACO:
 
@@ -501,9 +483,8 @@ class HybridPSOACO:
         return best_assignment
 
 
-# ============================================================
 # BINDING
-# ============================================================
+
 
 def bind_pod(v1, pod, node_name):
 
@@ -544,10 +525,7 @@ def bind_pod(v1, pod, node_name):
             str(e)
         )
 
-
-# ============================================================
 # PARSE POD RESOURCES
-# ============================================================
 
 def parse_pod_resources(pod):
 
@@ -571,9 +549,8 @@ def parse_pod_resources(pod):
     return cpu_total, mem_total
 
 
-# ============================================================
 # SCHEDULE BATCH
-# ============================================================
+
 
 def _schedule_batch(
     v1,
@@ -608,10 +585,6 @@ def _schedule_batch(
             node_name
         )
 
-
-# ============================================================
-# MAIN LOOP
-# ============================================================
 
 def run_scheduler():
 
@@ -692,10 +665,6 @@ def run_scheduler():
 
             time.sleep(5)
 
-
-# ============================================================
-# ENTRY
-# ============================================================
 
 if __name__ == "__main__":
 

@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy scheduler
 COPY scheduler/green_scheduler.py .
 
-# Run as non-root (security best practice)
+# Run as non-root 
 RUN useradd -m scheduler
 USER scheduler
 
